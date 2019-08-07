@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Todo
 
 # Create your views here.
@@ -19,11 +19,12 @@ def create(request):
 
     todo = Todo(title=title, content=content, due_date=due_date)
     todo.save()
-
-    return render(request, 'create.html')
+    
+    # return render(request, 'create.html')
+    return redirect('/todos/')
 
 def index(request):
-    todos = Todo.objects.all()
+    todos = Todo.objects.order_by('due_date').all()
     context = {
         'todos':todos,
     }
@@ -39,7 +40,8 @@ def detail(request, todo_id):
 def delete(request, todo_id):
     todo = Todo.objects.get(id=todo_id)
     todo.delete()
-    return render(request, 'delete.html')
+    # return render(request, 'delete.html')
+    return redirect('/todos/')
 
 def edit(request, todo_id):
     todo = Todo.objects.get(id=todo_id)
@@ -58,4 +60,5 @@ def update(request, todo_id):
     todo.content = content
     todo.due_date = due_date
     todo.save()
-    return render(request, 'update.html')
+    # return render(request, 'update.html')
+    return redirect(f'/todos/{todo_id}/')
